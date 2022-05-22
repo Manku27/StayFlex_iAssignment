@@ -1,41 +1,53 @@
-import { PlayerCard } from "./PlayerCard";
+import { AllPlayerCardGrid } from "./AllPlayerCardGrid";
+import { PLAYER_DATA } from "../utils/mockPlayerList";
+import { useState } from "react";
+import { Box, Switch, Typography } from "@mui/material";
+import { AllPlayerGrid } from "./AllPlayerGrid";
+import { useLocation } from "react-router";
 
 export const ListPage = () => {
-  const data = [
-    {
-      id: 1,
-      photo: "pic",
-      name: "name1",
-      currentClub: "Barcelona",
-      age: 10,
-      debutYear: 2022,
-      previousClub: "arsenal",
-      goals: 223,
-      assists: 400,
-      position: "forward",
-      freekickScored: 12
-    },
-    {
-      id: 2,
-      photo: "pic",
-      name: "name2",
-      currentClub: "Barcelona2",
-      age: 102,
-      debutYear: 20222,
-      previousClub: "arsenal2",
-      goals: 2223,
-      assists: 4002,
-      position: "forward2",
-      freekickScored: 122
-    }
-  ];
+  const { state } = useLocation();
+
+  // GET DATA FROM LOCALSTORAGE, not location state
+  const playerData = state ? PLAYER_DATA.push(state) : PLAYER_DATA;
+
+  const [isViewCard, setIsViewCard] = useState(true);
+
+  const handleViewChange = () => {
+    setIsViewCard(!isViewCard);
+  };
 
   return (
     <>
-      <h1>here are player details</h1>
-      {data.map((playerInfo) => (
-        <PlayerCard data={playerInfo} key={playerInfo.id} />
-      ))}
+      <Box display="flex" justifyContent="space-between">
+        <h1>Here are player details</h1>
+        <Box>
+          <Typography
+            as="span"
+            sx={{ fontWeight: !isViewCard ? "bold" : "normal" }}
+          >
+            {" "}
+            Table{" "}
+          </Typography>
+          <Switch
+            checked={isViewCard}
+            onChange={handleViewChange}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+          <Typography
+            as="span"
+            sx={{ fontWeight: isViewCard ? "bold" : "normal" }}
+          >
+            {" "}
+            Card{" "}
+          </Typography>
+        </Box>
+      </Box>
+      {isViewCard ? (
+        <AllPlayerCardGrid playerInfo={playerData} />
+      ) : (
+        <AllPlayerGrid playerInfo={playerData} />
+      )}
     </>
   );
 };
